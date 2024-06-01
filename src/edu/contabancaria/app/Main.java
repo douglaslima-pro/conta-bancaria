@@ -1,6 +1,5 @@
 package edu.contabancaria.app;
 
-import java.io.*;
 import java.util.Scanner;
 import java.util.Locale;
 import edu.contabancaria.model.ContaBancaria;
@@ -8,120 +7,72 @@ import edu.contabancaria.model.ContaBancaria;
 /**
  * <h2>Objetivo</h2>
  * <p>
- * Crie uma classe {@code Main} com um método <em>main</em> para testar sua
- * classe {@code ContaBancaria}.
+ * Crie uma classe {@code Main} com um método <strong>main</strong> para testar
+ * sua classe {@code ContaBancaria}.
  * </p>
  * <p>
- * No método main, crie uma instância da ContaBancaria e realize operações de
- * depósito e saque.
+ * No método main, crie uma instância da {@code ContaBancaria} e realize
+ * operações de <strong>depósito</strong> e <strong>saque</strong>.
  * </p>
  * 
  * @author Douglas Souza de Lima
  * @since 13/05/2024
+ * @version 01/06/2024
  */
 public class Main {
 
-	public static Scanner sc = new Scanner(System.in);
-
 	public static void main(String[] args) {
 		Locale.setDefault(Locale.forLanguageTag("pt-BR"));
-		int opcao;
-		System.out.println("CONTA BANCÁRIA");
-		exibirMenuInicial();
-		System.out.print("Digite a sua opção: ");
-		opcao = Main.sc.nextInt();
-		Main.sc.nextLine(); // Limpa o buffer de entrada
-		ContaBancaria conta;
-		if (opcao == 1) {
-			System.out.println();
-			conta = criarConta();
-			manterConta(conta);
-		}
-		Main.sc.close();
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("SISTEMA DE CONTA BANCÁRIA");
 		System.out.println();
-		System.out.println("Fim da execução.");
-	}
-
-	public static void exibirMenuInicial() {
-		System.out.println("1. Criar conta");
-		System.out.println("2. Sair");
-	}
-
-	public static void exibirMenuConta() {
-		System.out.println("1. Realizar depósito");
-		System.out.println("2. Realizar saque");
-		System.out.println("3. Visualizar informações da conta");
-		System.out.println("4. Sair");
-	}
-
-	public static ContaBancaria criarConta() {
-		String titular;
-		double saldo;
 		System.out.print("Digite o nome do titular: ");
-		titular = Main.sc.nextLine();
+		String titular = scanner.nextLine();
 		System.out.print("Digite o saldo da conta: R$ ");
-		saldo = Main.sc.nextDouble();
+		double saldo = scanner.nextDouble();
+		scanner.nextLine(); // Limpa o buffer de entrada
 		ContaBancaria conta = new ContaBancaria(titular, saldo);
-		return conta;
-	}
-
-	public static void visualizarConta(ContaBancaria conta) {
-		System.out.println("Titular: " + conta.getTitular());
-		System.out.printf("Saldo: R$ %.2f%n", conta.getSaldo());
-	}
-
-	public static ContaBancaria realizarDeposito(ContaBancaria conta, double valor) {
-		double saldoInicial = conta.getSaldo();
-		double saldoFinal;
-		if (conta.depositar(valor)) {
-			saldoFinal = conta.getSaldo();
-			System.out.println();
-			System.out.printf("Saldo inicial: R$ %.2f%n", saldoInicial);
-			System.out.printf("Saldo final: R$ %.2f%n", saldoFinal);
-		}
-		return conta;
-	}
-
-	public static ContaBancaria realizarSaque(ContaBancaria conta, double valor) {
-		double saldoInicial = conta.getSaldo();
-		double saldoFinal;
-		if (conta.sacar(valor)) {
-			saldoFinal = conta.getSaldo();
-			System.out.println();
-			System.out.printf("Saldo inicial: R$ %.2f%n", saldoInicial);
-			System.out.printf("Saldo final: R$ %.2f%n", saldoFinal);
-		}
-		return conta;
-	}
-
-	public static void manterConta(ContaBancaria conta) {
 		int opcao;
-		double valor;
+		do {
+			System.out.println();
+			System.out.println("\t1. Realizar depósito");
+			System.out.println("\t2. Realizar saque");
+			System.out.println("\t3. Visualizar informações da conta");
+			System.out.println("\t4. Sair");
+			System.out.print("Digite o número da sua opção: ");
+			opcao = scanner.nextInt();
+			scanner.nextLine(); // Limpa o buffer de entrada
+			System.out.println();
+			switch (opcao) {
+			case 1:
+				System.out.print("Digite o valor do depósito: R$ ");
+				double valorDeposito = scanner.nextDouble();
+				scanner.nextLine(); // Limpa o buffer de entrada
+				conta.depositar(valorDeposito);
+				break;
+			case 2:
+				System.out.print("Digite o valor do saque: R$ ");
+				double valorSaque = scanner.nextDouble();
+				scanner.nextLine(); // Limpa o buffer de entrada
+				conta.sacar(valorSaque);
+				break;
+			case 3:
+				System.out.printf("%30s %30s%n", "TITULAR", "SALDO (R$)");
+				System.out.printf("%30s %,30.2f%n", conta.getTitular(), conta.getSaldo());
+				break;
+			case 4:
+				System.out.println("Encerrando o programa...");
+				break;
+			default:
+				System.out.println("Opção inválida!");
+			}
+			System.out.println();
+			System.out.println("Aperte ENTER para continuar...");
+			scanner.nextLine();
+		} while (opcao != 4);
+		scanner.close();
 		System.out.println();
-		exibirMenuConta();
-		System.out.print("Digite a sua opção: ");
-		opcao = Main.sc.nextInt();
-		System.out.println();
-		switch (opcao) {
-		case 1:
-			System.out.print("Digite o valor do depósito: R$ ");
-			valor = Main.sc.nextDouble();
-			conta = realizarDeposito(conta, valor);
-			break;
-		case 2:
-			System.out.print("Digite o valor do saque: R$ ");
-			valor = Main.sc.nextDouble();
-			conta = realizarSaque(conta, valor);
-			break;
-		case 3:
-			visualizarConta(conta);
-			break;
-		case 4:
-			return;
-		default:
-			System.out.println("Opção inválida!");
-		}
-		manterConta(conta);
+		System.out.println("Programa encerrado.");
 	}
 
 }
